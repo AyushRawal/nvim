@@ -96,27 +96,27 @@ local gruvbox_custom = function()
   -- telescope
   local TelescopePrompt = {
     TelescopePromptNormal = {
-      bg = '#a89984',
-      fg = '#282828',
+      bg = "#a89984",
+      fg = "#282828",
       bold = true,
     },
     TelescopePromptBorder = {
-      bg = '#a89984',
-      fg = '#a89984',
+      bg = "#a89984",
+      fg = "#a89984",
     },
     TelescopePromptTitle = {
-      bg = '#a89984',
-      fg = '#a89984',
+      bg = "#a89984",
+      fg = "#a89984",
     },
     TelescopePromptPrefix = {
-      fg = '#563244',
+      fg = "#563244",
     },
     TelescopeNormal = {
-      bg = '#141617',
+      bg = "#141617",
     },
     TelescopeBorder = {
-      fg = '#141617',
-      bg = '#141617',
+      fg = "#141617",
+      bg = "#141617",
     },
   }
   for hi, col in pairs(TelescopePrompt) do

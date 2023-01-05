@@ -2,8 +2,8 @@ local ok, cmp = pcall(require, "cmp")
 local ok2, luasnip = pcall(require, "luasnip")
 
 if not ok or not ok2 then
-	print("cmp not loaded")
-	return
+  print("cmp not loaded")
+  return
 end
 
 local kind_icons = require("user.settings").kind_icons
@@ -20,62 +20,62 @@ keymaps.luasnip(luasnip)
 -- end
 
 cmp.setup({
-	snippet = {
-		-- REQUIRED - you must specify a snippet engine
-		expand = function(args)
-			luasnip.lsp_expand(args.body) -- For `luasnip` users.
-		end,
-	},
-	window = {
-		completion = cmp.config.window.bordered({ border = "single" }),
-		documentation = cmp.config.window.bordered({ border = "single" }),
-	},
-	mapping = cmp.mapping.preset.insert(keymaps.cmp(cmp)),
-	sources = cmp.config.sources({
-		{ name = "nvim_lsp" },
-		{ name = "luasnip" },
-	}, {
-		{ name = "buffer" },
-	}),
-	formatting = {
-		format = function(_, vim_item)
-			vim_item.kind = string.format("   %s%s", kind_icons[vim_item.kind], vim_item.kind)
-			-- vim_item.menu = ({
-			--   buffer = "[Buffer]",
-			--   nvim_lsp = "[LSP]",
-			--   luasnip = "[LuaSnip]",
-			-- })[entry.source.name]
-			return vim_item
-		end,
-	},
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      luasnip.lsp_expand(args.body) -- For `luasnip` users.
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered({ border = "single" }),
+    documentation = cmp.config.window.bordered({ border = "single" }),
+  },
+  mapping = cmp.mapping.preset.insert(keymaps.cmp(cmp)),
+  sources = cmp.config.sources({
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+  }, {
+    { name = "buffer" },
+  }),
+  formatting = {
+    format = function(_, vim_item)
+      vim_item.kind = string.format("   %s%s", kind_icons[vim_item.kind], vim_item.kind)
+      -- vim_item.menu = ({
+      --   buffer = "[Buffer]",
+      --   nvim_lsp = "[LSP]",
+      --   luasnip = "[LuaSnip]",
+      -- })[entry.source.name]
+      return vim_item
+    end,
+  },
 })
 
 cmp.setup.cmdline({ "/", "?" }, {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = {
-		{ name = "buffer" },
-	},
-	formatting = {
-		format = function(_, vim_item)
-			vim_item.kind = ""
-			vim_item.menu = ""
-			return vim_item
-		end,
-	},
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = "buffer" },
+  },
+  formatting = {
+    format = function(_, vim_item)
+      vim_item.kind = ""
+      vim_item.menu = ""
+      return vim_item
+    end,
+  },
 })
 
 cmp.setup.cmdline(":", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "path" },
-	}, {
-		{ name = "cmdline" },
-	}),
-	formatting = {
-		format = function(_, vim_item)
-			vim_item.kind = ""
-			vim_item.menu = ""
-			return vim_item
-		end,
-	},
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = "path" },
+  }, {
+    { name = "cmdline" },
+  }),
+  formatting = {
+    format = function(_, vim_item)
+      vim_item.kind = ""
+      vim_item.menu = ""
+      return vim_item
+    end,
+  },
 })

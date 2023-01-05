@@ -13,6 +13,9 @@ ts.setup({
     enable = true,
     autocmd = false, -- for comment.nvim
   },
+  indent = {
+    enable = true,
+  },
   textobjects = {
     select = {
       enable = true,
@@ -29,7 +32,7 @@ ts.setup({
         -- nvim_buf_set_keymap) which plugins like which-key display
         ["ic"] = "@class.inner", --{ query = "@class.inner", desc = "Select inner part of a class region" },
         ["ib"] = "@block.inner",
-        ["ab"] = "@block.outer"
+        ["ab"] = "@block.outer",
       },
       -- You can choose the select mode (default is charwise 'v')
       --

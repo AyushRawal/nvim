@@ -33,10 +33,10 @@ telescope.setup({
     --   preview = { '─', '│', '─', '│', '┌', '┐', '┘', '└' },
     -- },
     -- borderchars = {'▀', '▐', '▄', '▌', '▛', '▜', '▟', '▙' },
-  }
+  },
 })
 
-telescope.load_extension('fzf')
+telescope.load_extension("fzf")
 
 local keymaps = require("user.keymaps")
 keymaps.telescope(require("telescope.builtin"))

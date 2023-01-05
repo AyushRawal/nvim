@@ -40,7 +40,8 @@ opt.undofile = true --> undo persistence
 
 opt.foldmethod = "expr" -- folding, set to "expr" for treesitter based folding
 opt.foldexpr = "nvim_treesitter#foldexpr()" -- set to "nvim_treesitter#foldexpr()" for treesitter based folding
-opt.foldenable = false
+-- opt.foldenable = false
+opt.foldlevel = 99
 
 opt.timeoutlen = 600 --> time to wait for a mapped sequence to complete
 opt.updatetime = 300 --> faster completion (default: 400ms)
@@ -69,33 +70,33 @@ opt.smartcase = true --> override ignorecase when using uppercase chars
 
 -- disable some builtin vim plugins
 local default_plugins = {
-	"2html_plugin",
-	"getscript",
-	"getscriptPlugin",
-	"gzip",
-	"logipat",
-	"netrw",
-	"netrwPlugin",
-	"netrwSettings",
-	"netrwFileHandlers",
-	"matchit",
-	"tar",
-	"tarPlugin",
-	"rrhelper",
-	"spellfile_plugin",
-	"vimball",
-	"vimballPlugin",
-	"zip",
-	"zipPlugin",
-	"tutor",
-	"rplugin",
-	"syntax",
-	"synmenu",
-	"optwin",
-	"compiler",
-	"bugreport",
+  "2html_plugin",
+  "getscript",
+  "getscriptPlugin",
+  "gzip",
+  "logipat",
+  "netrw",
+  "netrwPlugin",
+  "netrwSettings",
+  "netrwFileHandlers",
+  "matchit",
+  "tar",
+  "tarPlugin",
+  "rrhelper",
+  "spellfile_plugin",
+  "vimball",
+  "vimballPlugin",
+  "zip",
+  "zipPlugin",
+  "tutor",
+  "rplugin",
+  "syntax",
+  "synmenu",
+  "optwin",
+  "compiler",
+  "bugreport",
 }
 
 for _, plugin in pairs(default_plugins) do
-	g["loaded_" .. plugin] = 1
+  g["loaded_" .. plugin] = 1
 end
