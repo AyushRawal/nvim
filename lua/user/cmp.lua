@@ -36,6 +36,7 @@ cmp.setup({
     { name = "luasnip" },
   }, {
     { name = "buffer" },
+    { name = "path" },
   }),
   formatting = {
     format = function(_, vim_item)

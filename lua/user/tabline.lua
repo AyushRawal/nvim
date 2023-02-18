@@ -21,8 +21,6 @@ bufferline.setup({
     close_icon = "",
     left_trunc_marker = "",
     right_trunc_marker = "",
-    -- highlights = require("catppuccin.groups.integrations.bufferline").get(),
-    -- highlights = require('rose-pine.plugins.bufferline'),
     --- name_formatter can be used to change the buffer's label in the bufferline.
     --- Please note some names can/will break the
     --- bufferline so use this at your discretion knowing that it has

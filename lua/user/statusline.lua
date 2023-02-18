@@ -21,7 +21,6 @@ local diagnostics_icons = require("user.settings").diagnostics_icons
 lualine.setup({
   options = {
     icons_enabled = true,
-    -- theme = 'catppuccin',
     theme = "gruvbox-material",
     -- component_separators = { left = '', right = '' },
     -- section_separators = { left = '', right = '' },

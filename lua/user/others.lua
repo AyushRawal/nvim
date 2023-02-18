@@ -16,3 +16,17 @@ if col_ok then
     css = { css = true },
   }, { names = false })
 end
+
+local null_ok, null_ls = pcall(require, "null-ls")
+
+if null_ok then
+  null_ls.setup({
+    sources = {
+      null_ls.builtins.formatting.stylua,
+      null_ls.builtins.formatting.black,
+      null_ls.builtins.diagnostics.shellcheck,
+    },
+    border = "single",
+    on_attach = require("user.lsp.settings").on_attach,
+  })
+end

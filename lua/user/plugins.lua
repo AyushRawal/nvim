@@ -1,102 +1,85 @@
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-    vim.cmd([[packadd packer.nvim]])
-    return true
-  end
-  return false
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
+vim.opt.rtp:prepend(lazypath)
 
-local packer_bootstrap = ensure_packer()
+require("lazy").setup({
+  -- colorscheme
+  "sainnhe/gruvbox-material",
 
-require("packer").startup({
-  function(use)
-    use("wbthomason/packer.nvim")
-    -- My plugins here
-    -- colorscheme
-    use("sainnhe/gruvbox-material")
-    use("ellisonleao/gruvbox.nvim")
-    use("luisiacc/gruvbox-baby")
-    use({ "catppuccin/nvim", as = "catppuccin" })
-    use({ "rose-pine/neovim", as = "rose-pine" })
-    use("lourenci/github-colors")
-    use("projekt0n/github-nvim-theme")
-    use({ "ramojus/mellifluous.nvim", requires = { "rktjmp/lush.nvim" } })
-    use("Yazeed1s/minimal.nvim")
-    use({ "bluz71/vim-moonfly-colors", branch = "cterm-compat" })
+  -- which key
+  "folke/which-key.nvim",
 
-    -- treesitter
-    use("nvim-treesitter/nvim-treesitter")
-    use("nvim-treesitter/nvim-treesitter-textobjects")
+  -- treesitter
+  "nvim-treesitter/nvim-treesitter",
+  "nvim-treesitter/nvim-treesitter-textobjects",
 
-    -- Comments
-    use("numToStr/Comment.nvim")
-    use("JoosepAlviste/nvim-ts-context-commentstring")
+  -- Comments
+  "numToStr/Comment.nvim",
+  "JoosepAlviste/nvim-ts-context-commentstring",
 
-    -- pairs and tags
-    use("windwp/nvim-autopairs")
-    use("tpope/vim-surround")
+  -- pairs and tags
+  "windwp/nvim-autopairs",
+  "tpope/vim-surround",
 
-    -- icons
-    use("kyazdani42/nvim-web-devicons")
+  -- icons
+  "kyazdani42/nvim-web-devicons",
 
-    -- indentlines
-    use("lukas-reineke/indent-blankline.nvim")
+  -- indentlines
+  "lukas-reineke/indent-blankline.nvim",
 
-    -- git
-    use("lewis6991/gitsigns.nvim")
+  -- git
+  "lewis6991/gitsigns.nvim",
 
-    use("nvim-lua/plenary.nvim")
-    use("MunifTanjim/nui.nvim")
+  "nvim-lua/plenary.nvim",
+  "MunifTanjim/nui.nvim",
 
-    -- lsp
-    use("williamboman/mason.nvim")
-    use("neovim/nvim-lspconfig")
+  -- lsp
+  "williamboman/mason.nvim",
+  "williamboman/mason-lspconfig.nvim",
+  "neovim/nvim-lspconfig",
 
-    use("jose-elias-alvarez/null-ls.nvim")
+  "jose-elias-alvarez/null-ls.nvim",
+  'mfussenegger/nvim-dap',
 
-    use({ "nvim-neo-tree/neo-tree.nvim", branch = "v2.x" })
+  { "nvim-neo-tree/neo-tree.nvim", branch = "v2.x" },
 
-    -- telescope
-    use({ "nvim-telescope/telescope.nvim", tag = "0.1.0" })
-    use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
+  -- telescope
+  { "nvim-telescope/telescope.nvim", version = "0.1.0" },
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 
-    -- autocomplete
-    use("hrsh7th/cmp-nvim-lsp")
-    use("hrsh7th/cmp-buffer")
-    use("hrsh7th/cmp-path")
-    use("hrsh7th/cmp-cmdline")
-    use("hrsh7th/nvim-cmp")
+  -- autocomplete
+  "hrsh7th/cmp-nvim-lsp",
+  "hrsh7th/cmp-buffer",
+  "hrsh7th/cmp-path",
+  "hrsh7th/cmp-cmdline",
+  "hrsh7th/nvim-cmp",
 
-    -- snipptets
-    use("L3MON4D3/LuaSnip")
-    use("saadparwaiz1/cmp_luasnip")
-    use("rafamadriz/friendly-snippets") -- a bunch of snippets to use
+  -- snipptets
+  "L3MON4D3/LuaSnip",
+  "saadparwaiz1/cmp_luasnip",
+  "rafamadriz/friendly-snippets", -- a bunch of snippets to use
 
-    -- code context
-    use("SmiteshP/nvim-navic")
+  -- code context
+  "SmiteshP/nvim-navic",
 
-    -- tabline
-    use({ "akinsho/bufferline.nvim", tag = "v3.*" })
+  -- tabline
+  { "akinsho/bufferline.nvim", version = "v3.*" },
 
-    -- statusline
-    use("nvim-lualine/lualine.nvim")
+  -- statusline
+  "nvim-lualine/lualine.nvim",
 
-    use("norcalli/nvim-colorizer.lua")
-
-    -- Automatically set up your configuration after cloning packer.nvim
-    -- Put this at the end after all plugins
-    if packer_bootstrap then
-      require("packer").sync()
-    end
-  end,
-  config = {
-    display = {
-      open_fn = function()
-        return require("packer.util").float({ border = "single" })
-      end,
-    },
+  "norcalli/nvim-colorizer.lua",
+}, {
+  ui = {
+    border = "single",
   },
 })

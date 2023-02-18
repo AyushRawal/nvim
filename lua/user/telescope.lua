@@ -36,6 +36,7 @@ telescope.setup({
   },
 })
 
+-- load fzf-native extension for better performance
 telescope.load_extension("fzf")
 
 local keymaps = require("user.keymaps")

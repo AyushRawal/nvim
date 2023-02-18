@@ -6,6 +6,14 @@ local function map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, options)
 end
 
+local ok, wk = pcall(require, "which-key")
+
+local function register(key, name)
+  if ok then
+    wk.register({ ["<leader>" .. key] = { name = name } })
+  end
+end
+
 local M = {}
 
 M.main = function()
@@ -27,20 +35,19 @@ M.main = function()
   map("n", "j", 'v:count || mode(1)[0:1] == "no" ? "j" : "gj"', { expr = true })
   map("n", "k", 'v:count || mode(1)[0:1] == "no" ? "k" : "gk"', { expr = true })
 
-  -- toggle wrap
-  map("n", "<F10>", ":setlocal wrap!<CR>")
+  map("n", "<F10>", ":setlocal wrap!<CR>", { desc = "toggle wrap" })
 
   -- create splits
   -- map("n", "<leader>v", ":vsplit<CR>")
   -- map("n", "<leader>s", ":split<CR>")
 
   -- move block of text
-  map("n", "<A-k>", ":m .-2<CR>==")
-  map("n", "<A-j>", ":m .+1<CR>==")
-  map("i", "<A-k>", "<ESC>:m .-2<CR>==gi")
-  map("i", "<A-j>", "<ESC>:m .+1<CR>==gi")
-  map("v", "<A-k>", ":m '<-2<CR>gv=gv")
-  map("v", "<A-j>", ":m '>+1<CR>gv=gv")
+  map("n", "<A-k>", ":m .-2<CR>==", { desc = "move line / range up" })
+  map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "move line / range up" })
+  map("i", "<A-k>", "<ESC>:m .-2<CR>==gi", { desc = "move line / range up" })
+  map("n", "<A-j>", ":m .+1<CR>==", { desc = "move line / range down" })
+  map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "move line / range down" })
+  map("i", "<A-j>", "<ESC>:m .+1<CR>==gi", { desc = "move line / range down" })
 
   -- better indenting
   map("v", "<", "<gv")
@@ -48,8 +55,13 @@ M.main = function()
 
   -- better yanking
   -- map("n", "Y", "y$") --> default
-  map("n", "<leader>y", ":%y<CR>") --> copy whole file
-  map("v", "<leader>p", '"_dP') --> replace selection with clipboard without sending replaced text to clipboard
+  map("n", "<leader>y", ":%y<CR>", { desc = "copy whole file" })
+  map(
+    "v",
+    "<leader>p",
+    '"_dP',
+    { desc = "replace selection with clipboard without sending replaced text to clipboard" }
+  )
   map("n", "x", '"_x') --> do not send deleted char to clipboard
   map("v", "x", '"_x') --> send selecction to blackhole register
 
@@ -57,27 +69,27 @@ M.main = function()
   -- location list TODO
 
   -- save me
-  map("n", "<leader>q", ":bd<CR>")
-  map("n", "<leader>w", ":w<CR>")
+  map("n", "<leader>q", ":bd<CR>", { desc = "delete buffer" })
+  map("n", "<leader>w", ":w<CR>", { desc = "save file" })
   vim.api.nvim_create_user_command("W", "w", {})
   vim.api.nvim_create_user_command("Wq", "wq", {})
   vim.api.nvim_create_user_command("Q", "q<bang>", { bang = true })
 
   -- terminal config
-  map("n", "<leader>tt", ":term<CR>")
-  map("n", "<leader>tv", ":60vsplit +term<CR>")
-  map("n", "<leader>ts", ":20split +term<CR>")
+  register("t", "term")
+  map("n", "<leader>tt", ":term<CR>", { desc = "terminal in tab" })
+  map("n", "<leader>tv", ":60vsplit +term<CR>", { desc = "terminal in vertical split" })
+  map("n", "<leader>ts", ":20split +term<CR>", { desc = "terminal in horizontal split" })
 
   -- escape terminal mode
   -- map("t", "<Esc>", [[<C-\><C-n>]])
 
   -- resizing
-  map("n", "<C-Up>", ":resize +2<CR>")
-  map("n", "<C-Down>", ":resize -2<CR>")
-  map("n", "<C-Left>", ":vertical resize -2<CR>")
-  map("n", "<C-Right>", ":vertical resize +2<CR>")
+  map("n", "<C-Up>", ":resize +2<CR>", { desc = "increase split height" })
+  map("n", "<C-Down>", ":resize -2<CR>", { desc = "decrease split height" })
+  map("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "decrease split width" })
+  map("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "increase split width" })
 
-  -- toggle indent size
   map("n", "<F9>", function()
     if vim.opt["shiftwidth"]._value == 2 then
       vim.opt["shiftwidth"] = 4
@@ -86,39 +98,42 @@ M.main = function()
       vim.opt["shiftwidth"] = 2
       vim.opt["tabstop"] = 2
     end
-  end)
+  end, { desc = "toggle indent size" })
 end
 
 M.lsp = function(bufnr)
-  local function buf_map(mode, lhs, rhs)
-    map(mode, lhs, rhs, { buffer = bufnr })
+  local function buf_map(mode, lhs, rhs, opts)
+    opts = opts or {}
+    opts.buffer = bufnr
+    map(mode, lhs, rhs, opts)
   end
 
-  buf_map("n", "gD", vim.lsp.buf.declaration)
-  buf_map("n", "gd", vim.lsp.buf.definition)
-  buf_map("n", "K", vim.lsp.buf.hover)
-  buf_map("n", "gI", vim.lsp.buf.implementation)
-  buf_map("n", "gs", vim.lsp.buf.signature_help)
+  register("l", "lsp")
+  buf_map("n", "gD", vim.lsp.buf.declaration, { desc = "go to declaration" })
+  buf_map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
+  buf_map("n", "K", vim.lsp.buf.hover, { desc = "hover" })
+  buf_map("n", "gI", vim.lsp.buf.implementation, { desc = "go to implementation" })
+  buf_map("n", "gs", vim.lsp.buf.signature_help, { desc = "show signature help" })
   -- buf_map("n", "<leader>lwa", vim.lsp.buf.add_workspace_folder)
   -- buf_map("n", "<leader>lwr", vim.lsp.buf.remove_workspace_folder)
   -- buf_map("n", "<leader>lwl", vim.pretty_print(vim.lsp.buf.list_workspace_folders()))
-  buf_map("n", "gy", vim.lsp.buf.type_definition)
-  buf_map("n", "<leader>lr", vim.lsp.buf.rename)
-  buf_map("n", "<leader>la", vim.lsp.buf.code_action)
-  buf_map("n", "gr", vim.lsp.buf.references)
-  buf_map("n", "gl", vim.diagnostic.open_float)
-  buf_map("n", "<leader>ll", vim.diagnostic.setloclist)
-  buf_map("n", "[d", vim.diagnostic.goto_prev)
-  buf_map("n", "]d", vim.diagnostic.goto_next)
+  buf_map("n", "gy", vim.lsp.buf.type_definition, { desc = "go to type definition" })
+  buf_map("n", "<leader>lr", vim.lsp.buf.rename, { desc = "rename object" })
+  buf_map("n", "<leader>la", vim.lsp.buf.code_action, { desc = "code action" })
+  buf_map("n", "gr", vim.lsp.buf.references, { desc = "go to references" })
+  buf_map("n", "gl", vim.diagnostic.open_float, { desc = "current line diagnostics" })
+  buf_map("n", "<leader>ll", vim.diagnostic.setloclist, { desc = "set location (quickfix) list" })
+  buf_map("n", "[d", vim.diagnostic.goto_prev, { desc = "next diagnostic" })
+  buf_map("n", "]d", vim.diagnostic.goto_next, { desc = "previous diagnostic" })
   buf_map({ "n", "v" }, "gq", function()
     vim.lsp.buf.format({ async = true })
-  end)
+  end, { desc = "format buffer / range" })
 end
 
 M.cmp = function(cmp)
   return {
-    ["<C-n"] = cmp.mapping.select_next_item(),
-    ["<C-p"] = cmp.mapping.select_prev_item(),
+    ["<C-n>"] = cmp.mapping.select_next_item(),
+    ["<C-p>"] = cmp.mapping.select_prev_item(),
     ["<C-u>"] = cmp.mapping.scroll_docs(-4),
     ["<C-d>"] = cmp.mapping.scroll_docs(4),
     ["<C-Space>"] = cmp.mapping.complete(),
@@ -173,16 +188,16 @@ end
 
 M.tabline = function()
   -- map("n", "<leader>b", "<Plug>(cokeline-pick-focus)")
-  map("n", "<leader>b", ":BufferLinePick<CR>")
-  map({ "n", "i" }, "<A-b>", "<cmd>BufferLineCycleNext<CR>")
-  map({ "n", "i" }, "<A-B>", "<cmd>BufferLineCyclePrev<CR>")
-  map("n", "]b", ":BufferLineMoveNext<CR>")
-  map("n", "[b", ":BufferLineMovePrevious<CR>")
+  map("n", "<leader>b", ":BufferLinePick<CR>", { desc = "pick buffer" })
+  map("n", "]b", "<cmd>BufferLineCycleNext<CR>", { desc = "next buffer" })
+  map("n", "[b", "<cmd>BufferLineCyclePrev<CR>", { desc = "previous buffer" })
+  map("n", "<A-b>", ":BufferLineMoveNext<CR>", { desc = "move buffer forward" })
+  map("n", "<A-B>", ":BufferLineMovePrev<CR>", { desc = "move buffer backward" })
 end
 
 M.neotree = {
   main = function()
-    map("n", "<leader>n", ":Neotree toggle=true<CR>")
+    map("n", "<leader>n", ":Neotree toggle=true<CR>", { desc = "toggle filetree (neotree)" })
   end,
 
   global = {
@@ -270,7 +285,7 @@ M.gitsigns = function(bufnr)
       gs.next_hunk()
     end)
     return "<Ignore>"
-  end, { expr = true })
+  end, { expr = true, desc = "next hunk" })
 
   buf_map("n", "[g", function()
     if vim.wo.diff then
@@ -280,26 +295,28 @@ M.gitsigns = function(bufnr)
       gs.prev_hunk()
     end)
     return "<Ignore>"
-  end, { expr = true })
+  end, { expr = true, desc = "previous hunk" })
 
-  buf_map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>")
-  buf_map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>")
-  buf_map("n", "<leader>gA", gs.stage_buffer)
-  buf_map("n", "<leader>gR", gs.reset_buffer)
-  buf_map("n", "<leader>gu", gs.undo_stage_hunk)
-  buf_map("n", "<leader>gp", gs.preview_hunk)
+  register("g", "git")
+  register("gt", "toggle")
+  buf_map({ "n", "v" }, "<leader>ga", ":Gitsigns stage_hunk<CR>", { desc = "stage hunk" })
+  buf_map({ "n", "v" }, "<leader>gr", ":Gitsigns reset_hunk<CR>", { desc = "reset hunk" })
+  buf_map("n", "<leader>gA", gs.stage_buffer, { desc = "stage buffer" })
+  buf_map("n", "<leader>gR", gs.reset_buffer, { desc = "reset buffer" })
+  buf_map("n", "<leader>gu", gs.undo_stage_hunk, { desc = "undo stage hunk" })
+  buf_map("n", "<leader>gp", gs.preview_hunk, { desc = "preview hunk" })
   buf_map("n", "<leader>gb", function()
     gs.blame_line({ full = true })
-  end)
-  buf_map("n", "<leader>gtb", gs.toggle_current_line_blame)
-  buf_map("n", "<leader>gd", gs.diffthis)
+  end, { desc = "blame line" })
+  buf_map("n", "<leader>gtb", gs.toggle_current_line_blame, { desc = "toggle current line blame" })
+  buf_map("n", "<leader>gd", gs.diffthis, { desc = "show buffer diff" })
   -- buf_map("n", "<leader>gD", function() gs.diffthis('~') end) --> diff with parent of head
-  buf_map("n", "<leader>gtd", gs.toggle_deleted)
-  buf_map("n", "<leader>gtl", gs.toggle_linehl)
-  buf_map("n", "<leader>gl", gs.setloclist)
+  buf_map("n", "<leader>gtd", gs.toggle_deleted, { desc = "toggle deleted lines" })
+  buf_map("n", "<leader>gtl", gs.toggle_linehl, { desc = "toggle line highlight" })
+  buf_map("n", "<leader>gl", gs.setloclist, { desc = "set location list with current buffer hunks" })
   buf_map("n", "<leader>gq", function()
     gs.setqflist({ target = "all" })
-  end)
+  end, { desc = "set qf list with hunks from all buffers" })
 
   -- text object
   buf_map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
@@ -332,9 +349,10 @@ M.comment = {
 }
 
 M.telescope = function(telescope_builtin)
-  map("n", "<leader>ff", telescope_builtin.find_files)
-  map("n", "<leader>fg", telescope_builtin.live_grep)
-  map("n", "<leader>fh", telescope_builtin.oldfiles)
+  register("f", "find")
+  map("n", "<leader>ff", telescope_builtin.find_files, { desc = "find files" })
+  map("n", "<leader>fg", telescope_builtin.live_grep, { desc = "search in files" })
+  map("n", "<leader>fh", telescope_builtin.oldfiles, { desc = "recent files" })
 end
 
 return M
