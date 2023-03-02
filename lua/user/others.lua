@@ -30,3 +30,14 @@ if null_ok then
     on_attach = require("user.lsp.settings").on_attach,
   })
 end
+
+local gs_ok, gs = pcall(require, "gitsigns")
+
+if gs_ok then
+  gs.setup({
+    current_line_blame_opts = {
+      virt_text_opts = "right_align",
+    },
+    on_attach = require("user.keymaps").gitsigns,
+  })
+end

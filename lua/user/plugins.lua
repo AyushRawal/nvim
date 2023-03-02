@@ -48,7 +48,6 @@ require("lazy").setup({
   "neovim/nvim-lspconfig",
 
   "jose-elias-alvarez/null-ls.nvim",
-  'mfussenegger/nvim-dap',
 
   { "nvim-neo-tree/neo-tree.nvim", branch = "v2.x" },
 
