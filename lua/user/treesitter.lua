@@ -33,6 +33,8 @@ ts.setup({
         ["ic"] = "@class.inner", --{ query = "@class.inner", desc = "Select inner part of a class region" },
         ["ib"] = "@block.inner",
         ["ab"] = "@block.outer",
+        ["ia"] = "@parameter.inner",
+        ["aa"] = "@parameter.outer",
       },
       -- You can choose the select mode (default is charwise 'v')
       --
